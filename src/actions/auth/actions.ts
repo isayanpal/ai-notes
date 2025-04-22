@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
+import { toast } from "sonner";
 
 export async function signup(formData: FormData) {
   const supabase = createClient();
@@ -15,9 +16,12 @@ export async function signup(formData: FormData) {
   const { error } = await supabase.auth.signUp(data);
 
   if (error) {
+    toast("Signup failed, please try again");
     throw new Error(error.message);
   }
-
+  toast(
+    "Your account has been created ,please check your email to verify your account"
+  );
   revalidatePath("/", "layout");
   redirect("/signin");
 }
@@ -33,9 +37,13 @@ export async function signin(formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword(data);
 
   if (error) {
+    toast("Signin failed, please try again");
+
     throw new Error(error.message);
   }
-
+  toast(
+    "Welcome back!"
+  );
   revalidatePath("/", "layout");
   redirect("/");
 }
@@ -46,8 +54,11 @@ export async function signout() {
   let { error } = await supabase.auth.signOut();
 
   if (error) {
+    toast("Signout failed, please try again");
     throw new Error(error.message);
   }
+
+  toast( "You have been signed out. Redirecting to signin...");
 
   redirect("/signin");
 }

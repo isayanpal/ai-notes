@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NotesGenius
 
-## Getting Started
+This is a personal AI-powered note-taking application built with Next.js, TypeScript, and Supabase. It allows users to create, manage, and summarize their notes efficiently.
 
-First, run the development server:
+### Deployed Link - https://notes-genius-v0.vercel.app/
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+<img src="images/img1.png">
+<img src="images/img2.png">
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+* **Note Creation and Editing:** Easily create new notes and edit existing ones with a simple and intuitive interface.
+* **Note Listing:** View all your notes in a clear and organized manner.
+* **Individual Note View:** Access and review the full content of any specific note.
+* **AI-Powered Summarization:** Quickly get the key takeaways from your notes using the integrated summarization feature powered by the Gemini AI API.
+* **User Authentication:** Secure user accounts with Google Sign-in.
+* **Dashboard:** A central place to view and manage your notes.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Technologies Used
 
-## Learn More
+* **Next.js:** A React framework for building server-rendered and statically generated web applications.
+* **TypeScript:** A statically typed superset of JavaScript that enhances code maintainability and reduces errors.
+* **Supabase:** An open-source Firebase alternative that provides a PostgreSQL database, authentication, storage, and more.
+* **React Query:** A library for managing and caching asynchronous data in React applications.
+* **Shadcn UI:** A collection of accessible and reusable UI primitives built with Radix UI and Tailwind CSS.
+* **Tailwind CSS:** A utility-first CSS framework for rapid UI development.
+* **Gemini AI API:** Google's powerful language model used for note summarization.
 
-To learn more about Next.js, take a look at the following resources:
+## Getting Started to run this on your machine
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/isayanpal/ai-notes
+    cd ai-notes
+    ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    # or
+    yarn install
+    # or
+    pnpm install
+    ```
 
-## Deploy on Vercel
+3.  **Set up Supabase:**
+    * Create a new project on [Supabase](https://supabase.com/).
+    * Obtain your Supabase API URL and public API key from your project settings.
+    * Update the `.env.local` file (create one if it doesn't exist) with your Supabase credentials and your Gemini AI API key:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+        ```
+        NEXT_PUBLIC_SUPABASE_URL=YOUR_SUPABASE_URL
+        NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR_SUPABASE_PUBLIC_API_KEY
+        NEXT_PUBLIC_GEMINI_API_KEY=YOUR_GEMINI_API_KEY
+        ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4.  **Run the development server:**
+    ```bash
+    npm run dev
+    # or
+    yarn dev
+    # or
+    pnpm dev
+    ```
+
+    Open your browser and navigate to `http://localhost:3000`.
