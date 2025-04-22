@@ -1,4 +1,4 @@
-# NotesGenius
+# NoteGenius
 
 This is a personal AI-powered note-taking application built with Next.js, TypeScript, and Supabase. It allows users to create, manage, and summarize their notes efficiently.
 
