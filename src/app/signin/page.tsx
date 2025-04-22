@@ -13,8 +13,10 @@ import {
   CardFooter,
   Card,
 } from "@/components/ui/card";
+import GoogleSignin from "./GoogleSignin";
 
 export default async function SignInPage() {
+  
   const supabase = createClient();
   const { data } = await supabase.auth.getUser();
 
@@ -53,9 +55,10 @@ export default async function SignInPage() {
           </form>
           <Separator />
           <div className="space-y-4">
-            <Button className="w-full" variant="outline">
+            {/* <Button formAction={signInWithGoogle} className="w-full" variant="outline">
               Sign in with Google
-            </Button>
+            </Button> */}
+            <GoogleSignin/>
           </div>
         </CardContent>
         <CardFooter className="flex flex-col space-y-2">
