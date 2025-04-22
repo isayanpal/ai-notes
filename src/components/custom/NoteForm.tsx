@@ -34,11 +34,11 @@ const NoteForm: React.FC<NoteFormProps> = ({
   errorMessage,
 }) => {
   return (
-    <Card>
+    <Card className="border border-gray-800 bg-gradient-to-br from-[#18181B] via-[#1e1e21] to-[#27272a] hover:brightness-105 transition-all font-sans">
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2 text-xl">
           <FileText className="h-5 w-5 text-purple-500" />
-          <span>Create New Note</span>
+          <>Write your note</>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -77,24 +77,20 @@ const NoteForm: React.FC<NoteFormProps> = ({
         )}
       </CardContent>
       <CardFooter className="flex justify-end border-t border-gray-800 pt-4">
-        <ShimmerButton
+        <Button
           onClick={onSubmit}
           disabled={isLoading || !title || !content}
           className="bg-purple-600 hover:bg-purple-700 text-white"
         >
           {isLoading ? (
-            <>
-            <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-white dark:from-white dark:to-slate-900/10">
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            <span className="flex items-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin" />
               Creating...
             </span>
-            </>
           ) : (
-            <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-white dark:from-white dark:to-slate-900/10">
-              Create Note
-            </span>
+            <span>Create Note</span>
           )}
-        </ShimmerButton>
+        </Button>
       </CardFooter>
     </Card>
   );

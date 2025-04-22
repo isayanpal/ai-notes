@@ -20,10 +20,15 @@ export default async function Navbar() {
 
       <div className="flex items-center gap-4">
         {data?.user ? (
-          <SignOutButton />
+          <div className="flex flex-row items-center gap-4">
+            <Link href={"/dashboard"} className="ml-4">
+            <Button variant="outline">Dashboard</Button>
+            </Link>
+            <SignOutButton />
+          </div>
         ) : (
           <Link href={"/signin"}>
-            <Button variant="outline" className="hidden md:flex">
+            <Button variant="outline" className="flex">
               Log in
             </Button>
           </Link>

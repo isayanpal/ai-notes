@@ -7,7 +7,7 @@ import { Loader2, Plus, FileText } from "lucide-react";
 import NoteForm from "@/components/custom/NoteForm";
 import NoteCard from "@/components/custom/NoteCard";
 import type { Note } from "@/lib/types";
-import { toast } from "sonner"; 
+import { toast } from "sonner";
 import {
   Dialog,
   DialogTrigger,
@@ -78,12 +78,10 @@ export default function Dashboard() {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
       setNewNote({ title: "", content: "" });
       setIsAddingNoteDialogOpen(false); // Changed state update
-      toast( "Note created successfully!");
+      toast("Note created successfully!");
     },
     onError: (error: Error) => {
-      toast(
-         `Failed to create note: ${error.message}`,
-      );
+      toast(`Failed to create note: ${error.message}`);
     },
   });
 
@@ -115,14 +113,10 @@ export default function Dashboard() {
       setEditingNoteId(null);
       setEditedNote({ title: "", content: "" });
       setSummary(null);
-      toast(
-
- "Note updated successfully!"
-      );
+      toast("Note updated successfully!");
     },
     onError: (error: Error) => {
-      toast( `Failed to update note: ${error.message}`,
-      );
+      toast(`Failed to update note: ${error.message}`);
     },
   });
 
@@ -139,12 +133,10 @@ export default function Dashboard() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
       setSelectedNoteId(null); // Clear selected note after deletion
-      toast("Note deleted successfully!",
-      );
+      toast("Note deleted successfully!");
     },
     onError: (error: Error) => {
-      toast(`Failed to delete note: ${error.message}`,
-      );
+      toast(`Failed to delete note: ${error.message}`);
     },
   });
 
@@ -172,8 +164,7 @@ export default function Dashboard() {
     },
     onError: (err: Error) => {
       console.error("Error summarizing note:", err);
-      toast(`Failed to summarize note: ${err.message}`,
-      );
+      toast(`Failed to summarize note: ${err.message}`);
     },
     onSettled: () => {
       setSummarizingNoteId(null);
@@ -238,7 +229,9 @@ export default function Dashboard() {
       <div className="flex justify-center items-center h-screen bg-black">
         <div className="bg-red-900/20 border border-red-900/30 rounded-lg p-6 max-w-md">
           <h2 className="text-xl font-bold text-red-400 mb-2">Error</h2>
-          <p className="text-gray-300">Failed to fetch notes. Please try again later.</p>
+          <p className="text-gray-300">
+            Failed to fetch notes. Please try again later.
+          </p>
         </div>
       </div>
     );
@@ -287,19 +280,16 @@ export default function Dashboard() {
           >
             <DialogTrigger asChild>
               <ShimmerButton className="flex items-center gap-2 border-purple-500/30 hover:bg-purple-900/20 hover:text-purple-300">
-                <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-white dark:from-white dark:to-slate-900/10">
-                  <div className="flex flex-row items-center gap-2 justify-center">
-                    <Plus className="h-4 w-4" />
-                    <span>Add New Note</span>
-                  </div>
+                <span className="flex flex-row items-center gap-2 justify-center text-center text-sm font-medium leading-none tracking-tight text-white dark:from-white dark:to-slate-900/10">
+                  <Plus className="h-4 w-4" />
+                  <span>Add New Note</span>
                 </span>
               </ShimmerButton>
             </DialogTrigger>
-            <DialogContent className="w-full max-w-2xl mb-8 border border-gray-800 bg-gradient-to-br from-[#18181B] via-[#1e1e21] to-[#27272a] hover:brightness-105 transition-all font-sans">
+            <DialogContent className="w-full mx-auto">
               <DialogHeader>
                 <DialogTitle>Add New Note</DialogTitle>
-                <DialogDescription>
-                  <NoteForm
+                <NoteForm
                     title={newNote.title}
                     content={newNote.content}
                     isLoading={createNoteMutation.isPending}
@@ -316,7 +306,6 @@ export default function Dashboard() {
                         : undefined
                     }
                   />
-                </DialogDescription>
               </DialogHeader>
             </DialogContent>
           </Dialog>
