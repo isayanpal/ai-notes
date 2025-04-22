@@ -1,14 +1,30 @@
 "use client";
-import React, { useState } from "react";
+
+import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, Plus, FileText } from "lucide-react";
 import NoteForm from "@/components/custom/NoteForm";
 import NoteCard from "@/components/custom/NoteCard";
+import type { Note } from "@/lib/types";
+import { toast } from "sonner"; 
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { ShimmerButton } from "@/components/magicui/shimmer-button";
 
-import { Note } from "@/lib/types"
+export default function Dashboard() {
+  const [isVisible, setIsVisible] = useState(false);
 
-const Dashboard = () => {
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
+
   const [newNote, setNewNote] = useState({ title: "", content: "" });
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [editedNote, setEditedNote] = useState<{
@@ -22,16 +38,15 @@ const Dashboard = () => {
   const [summarizingNoteId, setSummarizingNoteId] = useState<string | null>(
     null
   );
-  const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
-  const [isAddingNote, setIsAddingNote] = useState(false); // State to toggle the form
+  const [isAddingNoteDialogOpen, setIsAddingNoteDialogOpen] = useState(false); // Changed variable name
+  const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null); // State for selected note
   const queryClient = useQueryClient();
 
-  // Fetch notes using TanStack Query, now fetching from our API route
+  // Fetch notes using TanStack Query
   const {
     data: notes,
     isLoading,
     isError,
-    error,
   } = useQuery<Note[], Error>({
     queryKey: ["notes"],
     queryFn: async () => {
@@ -43,7 +58,7 @@ const Dashboard = () => {
     },
   });
 
-  // Mutations using TanStack Query, now using our API routes
+  // Mutations using TanStack Query
   const createNoteMutation = useMutation({
     mutationFn: async (note: { title: string; content: string }) => {
       const response = await fetch("/api/notes", {
@@ -62,7 +77,13 @@ const Dashboard = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
       setNewNote({ title: "", content: "" });
-      setIsAddingNote(false); // Close the form after successful creation
+      setIsAddingNoteDialogOpen(false); // Changed state update
+      toast( "Note created successfully!");
+    },
+    onError: (error: Error) => {
+      toast(
+         `Failed to create note: ${error.message}`,
+      );
     },
   });
 
@@ -94,6 +115,14 @@ const Dashboard = () => {
       setEditingNoteId(null);
       setEditedNote({ title: "", content: "" });
       setSummary(null);
+      toast(
+
+ "Note updated successfully!"
+      );
+    },
+    onError: (error: Error) => {
+      toast( `Failed to update note: ${error.message}`,
+      );
     },
   });
 
@@ -109,10 +138,17 @@ const Dashboard = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
+      setSelectedNoteId(null); // Clear selected note after deletion
+      toast("Note deleted successfully!",
+      );
+    },
+    onError: (error: Error) => {
+      toast(`Failed to delete note: ${error.message}`,
+      );
     },
   });
 
-  // Summarize mutation (remains separate as it calls an API route)
+  // Summarize mutation
   const summarizeNoteMutation = useMutation({
     mutationFn: async (content: string) => {
       const response = await fetch("/api/summarize", {
@@ -127,15 +163,17 @@ const Dashboard = () => {
         throw new Error(errorData?.error || "Failed to summarize note");
       }
       const { summary } = await response.json();
-      console.log("Received summary:", summary); // Log the received summary
       return summary as string;
     },
     onSuccess: (data, variables) => {
       setSummary(data);
       setSummarizingNoteId(variables);
+      toast("AI summary generated successfully!");
     },
-    onError: (err) => {
+    onError: (err: Error) => {
       console.error("Error summarizing note:", err);
+      toast(`Failed to summarize note: ${err.message}`,
+      );
     },
     onSettled: () => {
       setSummarizingNoteId(null);
@@ -174,89 +212,185 @@ const Dashboard = () => {
 
   const handleSummarize = async (id: string, content: string) => {
     setSummary(null);
-    setSummarizingNoteId(id); // Use the note's ID
+    setSummarizingNoteId(id);
     try {
       const summary = await summarizeNoteMutation.mutateAsync(content);
-      setSummary(summary); // Update the summary state
+      setSummary(summary);
     } catch (error) {
       console.error("Error summarizing note:", error);
     } finally {
-      setSummarizingNoteId(null); // Clear the summarizing state
+      setSummarizingNoteId(null);
     }
-  };
-
-  const handleOpenSummaryModal = () => {
-    setIsSummaryModalOpen(true);
-  };
-
-  const handleCloseSummaryModal = () => {
-    setIsSummaryModalOpen(false);
   };
 
   if (isLoading)
     return (
-      <div className="flex justify-center items-center h-screen">
-        <Loader2 className="animate-spin text-4xl text-gray-500" />
+      <div className="flex justify-center items-center h-screen bg-black">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="animate-spin text-4xl text-purple-500" />
+          <p className="text-gray-400">Loading your notes...</p>
+        </div>
       </div>
     );
-  if (isError) return <div>Error fetching notes: {error?.message}</div>;
+
+  if (isError)
+    return (
+      <div className="flex justify-center items-center h-screen bg-black">
+        <div className="bg-red-900/20 border border-red-900/30 rounded-lg p-6 max-w-md">
+          <h2 className="text-xl font-bold text-red-400 mb-2">Error</h2>
+          <p className="text-gray-300">Failed to fetch notes. Please try again later.</p>
+        </div>
+      </div>
+    );
 
   return (
-    <div className="p-6 flex flex-col items-center justify-center">
-      <h1 className="text-2xl font-bold mb-4">Your Notes</h1>
-      <Button
-        variant="outline"
-        onClick={() => setIsAddingNote((prev) => !prev)}
-        className="mb-4"
-      >
-        {isAddingNote ? "Cancel" : "Add Note"}
-      </Button>
-      {isAddingNote && (
-        <NoteForm
-          title={newNote.title}
-          content={newNote.content}
-          isLoading={isLoading}
-          onTitleChange={(value) => setNewNote({ ...newNote, title: value })}
-          onContentChange={(value) =>
-            setNewNote({ ...newNote, content: value })
-          }
-          onSubmit={handleCreateNote}
-          errorMessage={
-            createNoteMutation.isError
-              ? createNoteMutation.error?.message
-              : undefined
-          }
-        />
-      )}
-      {notes && notes.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {notes.map((note) => (
-            <NoteCard
-              key={note.id}
-              note={note}
-              isLoading={isLoading}
-              editingNoteId={editingNoteId}
-              summarizingNoteId={summarizingNoteId}
-              summary={summary}
-              isSummaryModalOpen={isSummaryModalOpen}
-              onEdit={handleEdit}
-              onSaveEdit={handleSaveEdit}
-              onCancelEdit={handleCancelEdit}
-              onDelete={handleDelete}
-              onSummarize={handleSummarize}
-              onOpenSummaryModal={handleOpenSummaryModal}
-              onCloseSummaryModal={handleCloseSummaryModal}
-              editedNote={editedNote}
-              setEditedNote={setEditedNote}
-              setIsSummaryModalOpen={setIsSummaryModalOpen}
-            />
-          ))}
+    <div className="min-h-screen bg-black text-white flex font-sans">
+      {/* Sidebar */}
+      <aside className="w-64 p-6 bg-gradient-to-br from-[#18181B] via-[#1e1e21] to-[#27272a] border-r border-gray-800 flex flex-col">
+        <div>
+          <h2 className="text-lg font-semibold text-purple-400 mb-4">
+            Your All Notes
+          </h2>
+          {isLoading && <Loader2 className="animate-spin text-purple-500" />}
+          {isError && <p className="text-red-500">Failed to load notes</p>}
         </div>
-      ) : (
-        <p>No notes yet. Create one!</p>
-      )}
+        <nav className="flex-grow">
+          <ul className="space-y-2">
+            {notes?.map((note) => (
+              <li key={note.id}>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start hover:bg-gray-800/50"
+                  onClick={() => {
+                    setSelectedNoteId(note.id); // Set selected note ID
+                    setEditingNoteId(null); // Ensure we are not in edit mode
+                    setSummary(null); // Clear any previous summary
+                  }}
+                >
+                  {note.title}
+                </Button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </aside>
+
+      {/* Main Content */}
+      <main className="flex-1 p-6">
+        <div className="mb-8 flex justify-between items-center">
+          <h1 className="text-2xl font-bold">
+            {selectedNoteId ? "Note Details" : "View Note"}
+          </h1>
+          <Dialog
+            open={isAddingNoteDialogOpen}
+            onOpenChange={setIsAddingNoteDialogOpen}
+          >
+            <DialogTrigger asChild>
+              <ShimmerButton className="flex items-center gap-2 border-purple-500/30 hover:bg-purple-900/20 hover:text-purple-300">
+                <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-white dark:from-white dark:to-slate-900/10">
+                  <div className="flex flex-row items-center gap-2 justify-center">
+                    <Plus className="h-4 w-4" />
+                    <span>Add New Note</span>
+                  </div>
+                </span>
+              </ShimmerButton>
+            </DialogTrigger>
+            <DialogContent className="w-full max-w-2xl mb-8 border border-gray-800 bg-gradient-to-br from-[#18181B] via-[#1e1e21] to-[#27272a] hover:brightness-105 transition-all font-sans">
+              <DialogHeader>
+                <DialogTitle>Add New Note</DialogTitle>
+                <DialogDescription>
+                  <NoteForm
+                    title={newNote.title}
+                    content={newNote.content}
+                    isLoading={createNoteMutation.isPending}
+                    onTitleChange={(value) =>
+                      setNewNote({ ...newNote, title: value })
+                    }
+                    onContentChange={(value) =>
+                      setNewNote({ ...newNote, content: value })
+                    }
+                    onSubmit={handleCreateNote}
+                    errorMessage={
+                      createNoteMutation.isError
+                        ? createNoteMutation.error?.message
+                        : undefined
+                    }
+                  />
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+        </div>
+
+        {/* Display selected note or all notes */}
+        {selectedNoteId ? (
+          <>
+            {notes
+              ?.filter((note) => note.id === selectedNoteId)
+              .map((note) => (
+                <NoteCard
+                  key={note.id}
+                  note={note}
+                  isLoading={
+                    updateNoteMutation.isPending || deleteNoteMutation.isPending
+                  }
+                  editingNoteId={editingNoteId}
+                  summarizingNoteId={summarizingNoteId}
+                  summary={summary}
+                  isSummaryModalOpen={false}
+                  onEdit={handleEdit}
+                  onSaveEdit={handleSaveEdit}
+                  onCancelEdit={handleCancelEdit}
+                  onDelete={handleDelete}
+                  onSummarize={handleSummarize}
+                  onOpenSummaryModal={() => {}}
+                  onCloseSummaryModal={() => {}}
+                  editedNote={editedNote}
+                  setEditedNote={setEditedNote}
+                  setIsSummaryModalOpen={() => {}}
+                />
+              ))}
+            {/* AI Summary Section */}
+            <div className="bg-purple-900/30 rounded-md p-4 border border-purple-800 mt-6">
+              <h2 className="text-lg font-semibold text-purple-400 mb-2 flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-purple-500"></span>
+                AI Summary
+              </h2>
+              {summary ? (
+                <p className="text-gray-300">{summary}</p>
+              ) : (
+                <p className="text-gray-500">
+                  No summary available for the currently selected/edited note.
+                </p>
+              )}
+            </div>
+          </>
+        ) : // Display all notes
+        notes && notes.length > 0 ? (
+          <div className="flex items-center justify-center">
+            <div className="max-w-xl">
+              <h2 className="bg-clip-text text-transparent text-center bg-gradient-to-b from-neutral-900 to-neutral-700 dark:from-neutral-600 dark:to-white text-2xl md:text-4xl lg:text-7xl font-sans py-2 md:py-10 relative z-20 font-bold tracking-tight">
+                Select a Note <br /> to View Details and Summarize.
+              </h2>
+              <p className="max-w-xl mx-auto text-sm md:text-lg text-neutral-700 dark:text-neutral-400 text-center">
+                Choose a note from the list to see its details or generate an
+                AI-powered summary.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center p-12 border border-gray-800 rounded-lg bg-gray-900/30 mb-6">
+            <FileText className="h-16 w-16 text-gray-700 mb-4" />
+            <p className="text-gray-400 text-lg mb-4">No notes yet</p>
+            <Button
+              onClick={() => setIsAddingNoteDialogOpen(true)}
+              className="bg-purple-600 hover:bg-purple-700"
+            >
+              Create Your First Note
+            </Button>
+          </div>
+        )}
+      </main>
     </div>
   );
-};
-
-export default Dashboard;
+}

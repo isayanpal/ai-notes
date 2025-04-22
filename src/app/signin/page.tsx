@@ -16,7 +16,6 @@ import {
 import GoogleSignin from "./GoogleSignin";
 
 export default async function SignInPage() {
-  
   const supabase = createClient();
   const { data } = await supabase.auth.getUser();
 
@@ -51,14 +50,16 @@ export default async function SignInPage() {
               <Label htmlFor="password">Password</Label>
               <Input id="password" name="password" required type="password" />
             </div>
-            <Button formAction={signin} className="w-full">Sign in</Button>
+            <Button formAction={signin} className="w-full">
+              Sign in
+            </Button>
           </form>
           <Separator />
-          <div className="space-y-4">
-            {/* <Button formAction={signInWithGoogle} className="w-full" variant="outline">
-              Sign in with Google
-            </Button> */}
-            <GoogleSignin/>
+          <div className="text-white font-semibold text-center">
+            or
+          </div>
+          <div className="space-y-4 text-center">
+            <GoogleSignin />
           </div>
         </CardContent>
         <CardFooter className="flex flex-col space-y-2">
