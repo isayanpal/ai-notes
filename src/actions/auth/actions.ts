@@ -19,11 +19,11 @@ export async function signup(formData: FormData) {
     toast("Signup failed, please try again");
     throw new Error(error.message);
   }
+  revalidatePath("/", "layout");
+  redirect("/signin");
   toast(
     "Your account has been created ,please check your email to verify your account"
   );
-  revalidatePath("/", "layout");
-  redirect("/signin");
 }
 
 export async function signin(formData: FormData) {
@@ -41,11 +41,11 @@ export async function signin(formData: FormData) {
 
     throw new Error(error.message);
   }
+  revalidatePath("/", "layout");
+  redirect("/");
   toast(
     "Welcome back!"
   );
-  revalidatePath("/", "layout");
-  redirect("/");
 }
 
 export async function signout() {
@@ -58,7 +58,7 @@ export async function signout() {
     throw new Error(error.message);
   }
 
+  redirect("/signin");
   toast( "You have been signed out. Redirecting to signin...");
 
-  redirect("/signin");
 }
