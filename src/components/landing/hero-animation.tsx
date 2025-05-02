@@ -38,7 +38,6 @@ export default function HeroAnimation() {
               <div className="bg-purple-600 rounded-lg p-2 text-xs font-medium">All Notes</div>
               <div className="bg-gray-700 rounded-lg p-2 text-xs">Work</div>
               <div className="bg-gray-700 rounded-lg p-2 text-xs">Personal</div>
-              <div className="bg-gray-700 rounded-lg p-2 text-xs">Ideas</div>
             </div>
 
             {/* Main Content */}
