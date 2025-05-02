@@ -14,12 +14,16 @@ import {
   Card,
 } from "@/components/ui/card";
 import GoogleSignin from "./GoogleSignin";
+import { toast } from "sonner";
 
 export default async function SignInPage() {
   const supabase = createClient();
   const { data } = await supabase.auth.getUser();
 
   if (data?.user) {
+    toast(
+      "Welcome back!"
+    );
     redirect("/");
   }
 
