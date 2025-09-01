@@ -1,16 +1,15 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { Quote } from "lucide-react"
+import { TestimonialCardProps } from "@/lib/types";
+import { motion } from "framer-motion";
+import { Quote } from "lucide-react";
 
-interface TestimonialCardProps {
-  quote: string
-  author: string
-  role: string
-  delay?: number
-}
-
-export default function TestimonialCard({ quote, author, role, delay = 0 }: TestimonialCardProps) {
+export default function TestimonialCard({
+  quote,
+  author,
+  role,
+  delay = 0,
+}: TestimonialCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -27,11 +26,17 @@ export default function TestimonialCard({ quote, author, role, delay = 0 }: Test
 
       {/* Content */}
       <Quote className="h-8 w-8 text-purple-500 mb-4 opacity-70 relative z-10" />
-      <p className="text-gray-300 mb-6 relative z-10 group-hover:text-gray-200 transition-colors">{quote}</p>
+      <p className="text-gray-300 mb-6 relative z-10 group-hover:text-gray-200 transition-colors">
+        {quote}
+      </p>
       <div className="relative z-10">
-        <p className="font-medium text-white group-hover:text-purple-100 transition-colors">{author}</p>
-        <p className="text-gray-400 text-sm group-hover:text-gray-300 transition-colors">{role}</p>
+        <p className="font-medium text-white group-hover:text-purple-100 transition-colors">
+          {author}
+        </p>
+        <p className="text-gray-400 text-sm group-hover:text-gray-300 transition-colors">
+          {role}
+        </p>
       </div>
     </motion.div>
-  )
+  );
 }

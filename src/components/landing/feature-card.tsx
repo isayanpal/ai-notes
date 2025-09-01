@@ -1,16 +1,14 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import type { ReactNode } from "react"
+import { FeatureCardProps } from "@/lib/types";
+import { motion } from "framer-motion";
 
-interface FeatureCardProps {
-  icon: ReactNode
-  title: string
-  description: string
-  delay?: number
-}
-
-export default function FeatureCard({ icon, title, description, delay = 0 }: FeatureCardProps) {
+export default function FeatureCard({
+  icon,
+  title,
+  description,
+  delay = 0,
+}: FeatureCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -35,7 +33,9 @@ export default function FeatureCard({ icon, title, description, delay = 0 }: Fea
       <h3 className="text-xl font-semibold mb-2 text-white group-hover:text-purple-100 transition-colors relative z-10">
         {title}
       </h3>
-      <p className="text-gray-400 group-hover:text-gray-300 transition-colors relative z-10">{description}</p>
+      <p className="text-gray-400 group-hover:text-gray-300 transition-colors relative z-10">
+        {description}
+      </p>
     </motion.div>
-  )
+  );
 }

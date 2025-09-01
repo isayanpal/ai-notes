@@ -1,20 +1,9 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Check } from "lucide-react"
-import { motion } from "framer-motion"
-
-interface PricingCardProps {
-  title: string
-  price: string
-  period?: string
-  description: string
-  features: string[]
-  buttonText: string
-  buttonVariant: "default" | "outline"
-  highlighted?: boolean
-  delay?: number
-}
+import { Button } from "@/components/ui/button";
+import { PricingCardProps } from "@/lib/types";
+import { motion } from "framer-motion";
+import { Check } from "lucide-react";
 
 export default function PricingCard({
   title,
@@ -61,7 +50,9 @@ export default function PricingCard({
           <span className="text-3xl font-bold text-white">{price}</span>
           {period && <span className="text-gray-400 ml-1">{period}</span>}
         </div>
-        <p className="text-gray-400 mb-6 group-hover:text-gray-300 transition-colors">{description}</p>
+        <p className="text-gray-400 mb-6 group-hover:text-gray-300 transition-colors">
+          {description}
+        </p>
         <ul className="space-y-3 mb-8">
           {features.map((feature, index) => (
             <li key={index} className="flex items-start gap-2 text-white">
@@ -73,12 +64,14 @@ export default function PricingCard({
         <Button
           variant={buttonVariant}
           className={`w-full ${
-            buttonVariant === "default" ? "bg-purple-600 hover:bg-purple-700 text-white" : ""
+            buttonVariant === "default"
+              ? "bg-purple-600 hover:bg-purple-700 text-white"
+              : ""
           }`}
         >
           {buttonText}
         </Button>
       </div>
     </motion.div>
-  )
+  );
 }

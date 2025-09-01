@@ -1,6 +1,6 @@
 "use client";
 
-import type React from "react";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,21 +8,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, FileText } from "lucide-react";
-import { ShimmerButton } from "../magicui/shimmer-button";
-
-interface NoteFormProps {
-  title: string;
-  content: string;
-  isLoading: boolean;
-  onTitleChange: (value: string) => void;
-  onContentChange: (value: string) => void;
-  onSubmit: () => void;
-  errorMessage?: string;
-}
+import { NoteFormProps } from "@/lib/types";
+import { FileText, Loader2 } from "lucide-react";
+import type React from "react";
 
 const NoteForm: React.FC<NoteFormProps> = ({
   title,
